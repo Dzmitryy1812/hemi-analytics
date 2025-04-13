@@ -1,0 +1,24 @@
+{
+  "name": "hemi-analytics",
+  "version": "1.0.0",
+  "description": "A lightweight dashboard for monitoring HEMI, Ethereum, and Bitcoin.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "express": "^4.21.2"
+  },
+  "author": "Dzmitryy1812",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dzmitryy1812/hemi-analytics.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Dzmitryy1812/hemi-analytics/issues"
+  },
+  "homepage": "https://github.com/Dzmitryy1812/hemi-analytics#readme"
+}

@@ -1,11 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>HEMI Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEMI Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { display: flex; justify-content: space-between; }
+        .card { border: 1px solid #ccc; padding: 20px; width: 45%; }
+        .card h2 { margin: 0 0 10px 0; }
+        .card p { margin: 5px 0; }
+    </style>
 </head>
 <body>
-  <h1>Welcome to the HEMI Dashboard!</h1>
-  <p>This dashboard will display real-time information on gas fees and cryptocurrency prices.</p>
+    <h1>Welcome to the HEMI Dashboard!</h1>
+    <p>This dashboard will display real-time information on gas fees and cryptocurrency prices.</p>
+    
+    <div class="container">
+        <div class="card">
+            <h2>ETH Gas Fees</h2>
+            <p id="ethGasPrice">Loading...</p>
+        </div>
+        <div class="card">
+            <h2>Current Cryptocurrency Prices</h2>
+            <p id="btcPrice">Loading...</p>
+            <p id="ethPrice">Loading...</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>BTC Gas Fees</h2>
+            <p id="btcGasPrice">Loading...</p>
+        </div>
+    </div>
+
+    <script>
+        async function fetchData() {
+            console.log("Fetching data...");
+
+            try {
+                // Fetch ETH Gas Fees from Etherscan
+                const ethGasResponse = await fetch(`https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=VA4FZFEWPZYP7PWA6JAJ3BN3BKGKN3UDFI`);
+                if (!ethGasResponse.ok) {
+                    throw new Error(`Failed to fetch ETH Gas data: ${ethGasResponse.statusText}`);
+                }
+                const ethGasData = await ethGasResponse.json();
+                console.log('ETH Gas Data:', ethGasData);
+                document.getElementById('ethGasPrice').innerText = `Current gas price: ${ethGasData.result.SafeGasPrice} Gwei`;
+
+                // Fetch Cryptocurrency Prices (CoinGecko)
+                const pricesResponse = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
+                if (!pricesResponse.ok) {
+                    throw new Error(`Failed to fetch Prices data: ${pricesResponse.statusText}`);
+                }
+                const pricesData = await pricesResponse.json();
+                console.log('Prices Data:', pricesData);
+                document.getElementById('btcPrice').innerText = `BTC: $${pricesData.bitcoin.usd}`;
+                document.getElementById('ethPrice').innerText = `ETH: $${pricesData.ethereum.usd}`;
+
+                // Fetch BTC Gas Fees (Mempool API)
+                const btcGasResponse = await fetch('https://mempool.space/api/v1/fees/recommended');
+                if (!btcGasResponse.ok) {
+                    throw new Error(`Failed to fetch BTC Gas data: ${btcGasResponse.statusText}`);
+                }
+                const btcGasData = await btcGasResponse.json();
+                console.log('BTC Gas Data:', btcGasData);
+                document.getElementById('btcGasPrice').innerText = `Current BTC gas price: ${btcGasData.fastestFee} sat/B`;
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('ethGasPrice').innerText = 'Error loading ETH gas data';
+                document.getElementById('btcPrice').innerText = 'Error loading BTC price';
+                document.getElementById('ethPrice').innerText = 'Error loading ETH price';
+                document.getElementById('btcGasPrice').innerText = 'Error loading BTC gas data';
+            }
+
+            console.log("Data fetched successfully");
+        }
+
+        // Call fetchData function when the page loads
+        window.onload = function() {
+            fetchData();
+        };
+    </script>
 </body>
 </html>
